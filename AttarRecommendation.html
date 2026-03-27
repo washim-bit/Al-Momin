@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AL MOMIN ATTAR SELECTOR</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{margin:0;font-family:Arial;background:#000;color:#fff}
+.container{max-width:400px;margin:20px auto;padding:20px;border-radius:15px;box-shadow:0 0 20px gold}
+h2{text-align:center;color:gold}
+select,input,textarea{width:100%;padding:10px;margin-top:5px;border:none;border-radius:5px}
+button{width:100%;padding:12px;margin-top:15px;border:none;border-radius:5px;font-size:16px;cursor:pointer}
+.find-btn{background:gold;color:#000;font-weight:bold}
+.order-btn{background:#25D366;color:#fff}
+.box{background:#111;padding:15px;margin-top:15px;border-radius:10px}
+#result{color:gold;margin-top:10px}
+.s1{color:white;background: black;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>AL MOMIN ATTAR SELECTOR ✨</h2>
+<div class="s1">
+<a href="ALMOMINATTAR.HTML  ">Home</a>
+  <a href="Product.html">Products</a>
+  <a href="a.html">golden bottle</a>
+  <a href="">ATTAR SELECTOR</a></div>
+
+
+<label>1. Fragrance Type</label>
+<select id="type">
+<option value="">Select</option>
+<option value="fresh">Fresh</option>
+<option value="sweet">Sweet</option>
+<option value="strong">Strong / Oud</option>
+</select>
+
+<label>2. Use</label>
+<select id="time">
+<option value="">Select</option>
+<option value="daily">Daily</option>
+<option value="party">Party</option>
+<option value="namaz">Namaz</option>
+</select>
+
+<label>3. Gender</label>
+<select id="gender">
+<option value="">Select</option>
+<option value="male">Male</option>
+<option value="female">Female</option>
+<option value="unisex">Unisex</option>
+</select>
+
+<label>4. Season</label>
+<select id="season">
+<option value="">Select</option>
+<option value="summer">Summer</option>
+<option value="winter">Winter</option>
+</select>
+
+<label>5. Mood</label>
+<select id="mood">
+<option value="">Select</option>
+<option value="romantic">Romantic</option>
+<option value="fresh">Fresh Mood</option>
+<option value="strong">Bold</option>
+</select>
+
+<label>6. Bottle Size</label>
+<select id="size">
+<option value="">Select</option>
+<option value="3">3 ML</option>
+<option value="6">6 ML</option>
+<option value="12">12 ML</option>
+</select>
+
+<label>7. Quantity</label>
+<select id="qty">
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+</select>
+
+<button onclick="suggestAttar()" class="find-btn">Find Best Attar</button>
+
+<h3 id="result"></h3>
+<p id="price"></p>
+
+<!-- NEW SELECT BOX -->
+<select id="selectAttar" style="display:none;"></select>
+
+<div class="box">
+<h3 style="color:gold;">Customer Details</h3>
+<input id="name" placeholder="Your Name">
+<input id="phone" placeholder="Phone Number">
+<textarea id="address" placeholder="Full Address"></textarea>
+</div>
+
+<div class="box" style="text-align:center;">
+<h3 style="color:gold;">Total Bill</h3>
+<p>Delivery: ₹100</p>
+<h2 id="total">₹0</h2>
+</div>
+
+<button onclick="orderNow()" class="order-btn">Order on WhatsApp</button>
+
+</div>
+
+<script>
+
+let attars=[];
+let price=0;
+
+const prices={
+"Cool Water":{3:100,6:200,12:400},
+"7 Milian":{3:150,6:300,12:600},
+"White Oud":{3:120,6:240,12:480},
+"Oud Mood":{3:120,6:240,12:480},
+"Khamrah":{3:120,6:240,12:480},
+"Sahi Gulab":{3:150,6:300,12:600},
+"Aqua De Gio":{3:120,6:240,12:480},
+"Blue Deo":{3:100,6:200,12:400},
+"Gucci Flora":{3:150,6:300,12:600},
+"Smoky Musk":{3:120,6:240,12:480}
+};
+
+function suggestAttar(){
+
+let type=document.getElementById("type").value;
+let time=document.getElementById("time").value;
+let gender=document.getElementById("gender").value;
+let season=document.getElementById("season").value;
+let mood=document.getElementById("mood").value;
+let size=document.getElementById("size").value;
+
+if(!type || !time || !gender || !season || !mood || !size){
+alert("Please select all options");
+return;
+}
+
+attars=[];
+
+if(type=="fresh"){
+attars.push("Cool Water","Aqua De Gio","Blue Deo");
+}
+if(type=="sweet"){
+attars.push("7 Milian","Khamrah","Gucci Flora");
+}
+if(type=="strong"){
+attars.push("White Oud","Oud Mood","Smoky Musk");
+}
+if(mood=="romantic"){
+attars.push("Sahi Gulab");
+}
+
+attars=[...new Set(attars)].slice(0,3);
+
+// SHOW LIST
+document.getElementById("result").innerText="Choose Attar:";
+
+// DROPDOWN BANANA
+let select=document.getElementById("selectAttar");
+select.style.display="block";
+select.innerHTML="";
+
+attars.forEach(a=>{
+let opt=document.createElement("option");
+opt.value=a;
+opt.innerText=a;
+select.appendChild(opt);
+});
+
+updatePrice();
+}
+
+function updatePrice(){
+let selected=document.getElementById("selectAttar").value;
+let ml=parseInt(document.getElementById("size").value);
+
+price = prices[selected] ? prices[selected][ml] : 150;
+
+document.getElementById("price").innerText="Price: ₹"+price;
+
+calculateTotal();
+}
+
+document.getElementById("selectAttar").addEventListener("change",updatePrice);
+document.getElementById("qty").addEventListener("change",calculateTotal);
+
+function calculateTotal(){
+let qty=parseInt(document.getElementById("qty").value);
+let total=(price*qty)+100;
+document.getElementById("total").innerText="₹"+total;
+}
+
+function orderNow(){
+
+let name=document.getElementById("name").value;
+let phone=document.getElementById("phone").value;
+let address=document.getElementById("address").value;
+let qty=document.getElementById("qty").value;
+let size=document.getElementById("size").value;
+let selected=document.getElementById("selectAttar").value;
+
+if(!name || !phone || !address){
+alert("Fill all details");
+return;
+}
+
+let total=document.getElementById("total").innerText;
+
+let msg=`🛍️ Attar Order
+
+👤 Name: ${name}
+📞 Phone: ${phone}
+🏠 Address: ${address}
+
+📌 Attar: ${selected}
+Size: ${size}ml
+Qty: ${qty}
+
+💰 Total: ${total}`;
+
+msg=encodeURIComponent(msg);
+
+window.open(`https://wa.me/9310223181?text=${msg}`,"_blank");
+}
+
+</script>
+
+</body>
+</html>
